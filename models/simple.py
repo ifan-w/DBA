@@ -17,12 +17,14 @@ class SimpleNet(nn.Module):
 
     def train_vis(self, vis, epoch, acc, loss=None, eid='main', is_poisoned=False, name=None):
         if name is None:
+            acc = acc.cpu()
             name = self.name + '_poisoned' if is_poisoned else self.name
         vis.line(X=np.array([epoch]), Y=np.array([acc]), name=name, win='train_acc_{0}'.format(self.created_time), env=eid,
                                 update='append' if vis.win_exists('train_acc_{0}'.format(self.created_time), env=eid) else None,
                                 opts=dict(showlegend=True, title='Train Accuracy_{0}'.format(self.created_time),
                                           width=700, height=400))
         if loss is not None:
+            loss = loss.cpu()
             vis.line(X=np.array([epoch]), Y=np.array([loss]), name=name, env=eid,
                                      win='train_loss_{0}'.format(self.created_time),
                                      update='append' if vis.win_exists('train_loss_{0}'.format(self.created_time), env=eid) else None,

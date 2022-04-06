@@ -253,7 +253,26 @@ class Helper:
             if self.params['diff_privacy']:
                 update_per_layer.add_(self.dp_noise(data, self.params['sigma']))
 
-            data.add_(update_per_layer)
+            data.add_(update_per_layer.to(data.dtype))
+        return True
+
+    def multikrum_update(self, target_model, updates):
+        idx2id = []
+        for k in updates:
+            idx2id.append(k)
+        l = len(idx2id)
+        dmat = torch.zeros((l, l))
+        for i in range(l):
+            for j in range(i, l):
+                dmat[i][j] = dmat[j][i] = self.l2dist(updates[idx2id[i]][1], updates[idx2id[j]][1])
+        mkidx = torch.sort(torch.sum(torch.sort(dmat, dim=1)[0][:, :l-len(self.params['adversary_list'])], dim=1))[1][:]
+        print('multi-krum idx: ', [idx2id[idx] for idx in mkidx])
+        for idx in mkidx:
+            update = updates[idx2id[idx]]
+            sd = update[1]
+            for name, data in target_model.state_dict().items():
+                data.add_( ( sd[name] * (self.params["eta"] / self.params["no_models"]) ).to(data.dtype))
+
         return True
 
     def foolsgold_update(self,target_model,updates):

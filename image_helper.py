@@ -259,7 +259,7 @@ class ImageHelper(Helper):
         train_loader = torch.utils.data.DataLoader(self.train_dataset,
                                            batch_size=self.params['batch_size'],
                                            sampler=torch.utils.data.sampler.SubsetRandomSampler(
-                                               indices),pin_memory=True, num_workers=8)
+                                               indices),pin_memory=False, num_workers=8)
         return train_loader
 
     def get_train_old(self, all_range, model_no):

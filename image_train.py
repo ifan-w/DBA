@@ -266,7 +266,7 @@ def ImageTrain(helper, start_epoch, local_model, target_model, is_poison,agent_n
 
                 # test local model after internal epoch finishing
                 epoch_loss, epoch_acc, epoch_corret, epoch_total = test.Mytest(helper=helper, epoch=epoch,
-                                                                               model=model, is_poison=False, visualize=True,
+                                                                               model=model, is_poison=False, visualize=False,
                                                                                agent_name_key=agent_name_key)
                 csv_record.test_result.append([agent_name_key, epoch, epoch_loss, epoch_acc, epoch_corret, epoch_total])
 
